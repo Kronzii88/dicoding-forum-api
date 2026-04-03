@@ -1,26 +1,26 @@
-import { vi } from 'vitest';
-import RegisterUser from '../../../Domains/users/entities/RegisterUser.js';
-import RegisteredUser from '../../../Domains/users/entities/RegisteredUser.js';
-import UserRepository from '../../../Domains/users/UserRepository.js';
-import PasswordHash from '../../security/PasswordHash.js';
-import AddUserUseCase from '../AddUserUseCase.js';
+import { vi } from "vitest";
+import RegisterUser from "../../../Domains/users/entities/RegisterUser.js";
+import RegisteredUser from "../../../Domains/users/entities/RegisteredUser.js";
+import UserRepository from "../../../Domains/users/UserRepository.js";
+import PasswordHash from "../../security/PasswordHash.js";
+import AddUserUseCase from "../AddUserUseCase.js";
 
-describe('AddUserUseCase', () => {
+describe("AddUserUseCase", () => {
   /**
    * Menguji apakah use case mampu mengoskestrasikan langkah demi langkah dengan benar.
    */
-  it('should orchestrating the add user action correctly', async () => {
+  it("should orchestrating the add user action correctly", async () => {
     // Arrange
     const useCasePayload = {
-      username: 'dicoding',
-      password: 'secret',
-      fullname: 'Dicoding Indonesia',
+      username: "dicoding",
+      password: "secret",
+      fullname: "Dicoding Indonesia",
     };
 
     const mockRegisteredUser = new RegisteredUser({
-      id: 'user-123',
-      username: useCasePayload.username,
-      fullname: useCasePayload.fullname,
+      id: "user-123",
+      username: "dicoding",
+      fullname: "Dicoding Indonesia",
     });
 
     /** creating dependency of use case */
@@ -28,11 +28,14 @@ describe('AddUserUseCase', () => {
     const mockPasswordHash = new PasswordHash();
 
     /** mocking needed function */
-    mockUserRepository.verifyAvailableUsername = vi.fn()
+    mockUserRepository.verifyAvailableUsername = vi
+      .fn()
       .mockImplementation(() => Promise.resolve());
-    mockPasswordHash.hash = vi.fn()
-      .mockImplementation(() => Promise.resolve('encrypted_password'));
-    mockUserRepository.addUser = vi.fn()
+    mockPasswordHash.hash = vi
+      .fn()
+      .mockImplementation(() => Promise.resolve("encrypted_password"));
+    mockUserRepository.addUser = vi
+      .fn()
       .mockImplementation(() => Promise.resolve(mockRegisteredUser));
 
     /** creating use case instance */
@@ -45,18 +48,18 @@ describe('AddUserUseCase', () => {
     const registeredUser = await getUserUseCase.execute(useCasePayload);
 
     // Assert
-    expect(registeredUser).toStrictEqual(new RegisteredUser({
-      id: 'user-123',
-      username: useCasePayload.username,
-      fullname: useCasePayload.fullname,
-    }));
+    expect(registeredUser).toStrictEqual(mockRegisteredUser);
 
-    expect(mockUserRepository.verifyAvailableUsername).toBeCalledWith(useCasePayload.username);
+    expect(mockUserRepository.verifyAvailableUsername).toBeCalledWith(
+      useCasePayload.username,
+    );
     expect(mockPasswordHash.hash).toBeCalledWith(useCasePayload.password);
-    expect(mockUserRepository.addUser).toBeCalledWith(new RegisterUser({
-      username: useCasePayload.username,
-      password: 'encrypted_password',
-      fullname: useCasePayload.fullname,
-    }));
+    expect(mockUserRepository.addUser).toBeCalledWith(
+      new RegisterUser({
+        username: useCasePayload.username,
+        password: "encrypted_password",
+        fullname: useCasePayload.fullname,
+      }),
+    );
   });
 });

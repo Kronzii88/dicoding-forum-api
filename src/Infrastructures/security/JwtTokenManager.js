@@ -29,7 +29,7 @@ class JwtTokenManager extends AuthenticationTokenManager {
     try {
       this._jwt.verify(token, config.auth.accessTokenKey);
     } catch {
-      throw new AuthenticationError("missing authentication");
+      throw new AuthenticationError("Missing authentication");
     }
   }
 
