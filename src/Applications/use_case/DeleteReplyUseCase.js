@@ -10,7 +10,9 @@ class DeleteReplyUseCase {
 
     await this._threadRepository.verifyAvailableThread(threadId);
     await this._commentRepository.verifyAvailableComment(commentId);
+    await this._commentRepository.checkCommentBelongsToThread(commentId, threadId);
     await this._replyRepository.verifyAvailableReply(replyId);
+    await this._replyRepository.checkReplyBelongsToComment(replyId, commentId);
     await this._replyRepository.verifyReplyOwner(replyId, owner);
     await this._replyRepository.deleteReply(replyId);
   }

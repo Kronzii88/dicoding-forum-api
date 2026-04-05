@@ -9,6 +9,10 @@ class DeleteCommentUseCase {
 
     await this._threadRepository.verifyAvailableThread(threadId);
     await this._commentRepository.verifyAvailableComment(commentId);
+    await this._commentRepository.checkCommentBelongsToThread(
+      commentId,
+      threadId,
+    );
     await this._commentRepository.verifyCommentOwner(commentId, owner);
     await this._commentRepository.deleteComment(commentId);
   }

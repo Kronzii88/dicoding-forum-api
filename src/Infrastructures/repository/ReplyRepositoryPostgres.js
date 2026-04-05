@@ -83,6 +83,19 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     }
   }
 
+  async checkReplyBelongsToComment(replyId, commentId) {
+    const query = {
+      text: 'SELECT id FROM replies WHERE id = $1 AND comment_id = $2',
+      values: [replyId, commentId],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rowCount) {
+      throw new NotFoundError('balasan dalam komentar tidak ditemukan');
+    }
+  }
+
   async getRepliesByThreadId(threadId) {
     const query = {
       text: `SELECT replies.id, users.username, replies.date, replies.content, replies.is_delete, comments.id AS comment_id

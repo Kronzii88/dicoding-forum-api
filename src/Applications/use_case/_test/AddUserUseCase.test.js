@@ -19,8 +19,8 @@ describe("AddUserUseCase", () => {
 
     const mockRegisteredUser = new RegisteredUser({
       id: "user-123",
-      username: "dicoding",
-      fullname: "Dicoding Indonesia",
+      username: "dicoding_user",
+      fullname: "Dicoding User",
     });
 
     /** creating dependency of use case */

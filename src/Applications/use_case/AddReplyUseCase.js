@@ -12,6 +12,7 @@ class AddReplyUseCase {
 
     await this._threadRepository.verifyAvailableThread(threadId);
     await this._commentRepository.verifyAvailableComment(commentId);
+    await this._commentRepository.checkCommentBelongsToThread(commentId, threadId);
 
     const newReply = new NewReply(useCasePayload);
     return this._replyRepository.addReply(newReply);
