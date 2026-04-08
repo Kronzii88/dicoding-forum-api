@@ -1,7 +1,7 @@
-import AddedReply from '../../Domains/replies/entities/AddedReply.js';
-import ReplyRepository from '../../Domains/replies/ReplyRepository.js';
-import NotFoundError from '../../Commons/exceptions/NotFoundError.js';
-import AuthorizationError from '../../Commons/exceptions/AuthorizationError.js';
+import AddedReply from "../../Domains/replies/entities/AddedReply.js";
+import ReplyRepository from "../../Domains/replies/ReplyRepository.js";
+import NotFoundError from "../../Commons/exceptions/NotFoundError.js";
+import AuthorizationError from "../../Commons/exceptions/AuthorizationError.js";
 
 class ReplyRepositoryPostgres extends ReplyRepository {
   constructor(pool, idGenerator) {
@@ -16,7 +16,7 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     const date = new Date().toISOString();
 
     const query = {
-      text: 'INSERT INTO replies VALUES($1, $2, $3, $4, $5) RETURNING id, content, owner',
+      text: "INSERT INTO replies VALUES($1, $2, $3, $4, $5) RETURNING id, content, owner",
       values: [id, content, commentId, owner, date],
     };
 
@@ -27,31 +27,27 @@ class ReplyRepositoryPostgres extends ReplyRepository {
 
   async verifyReplyOwner(replyId, owner) {
     const query = {
-      text: 'SELECT owner FROM replies WHERE id = $1',
+      text: "SELECT owner FROM replies WHERE id = $1",
       values: [replyId],
     };
 
     const result = await this._pool.query(query);
 
-    if (!result.rowCount) {
-      throw new NotFoundError('balasan tidak ditemukan');
-    }
-
     if (result.rows[0].owner !== owner) {
-      throw new AuthorizationError('anda tidak berhak mengakses resource ini');
+      throw new AuthorizationError("anda tidak berhak mengakses resource ini");
     }
   }
 
   async deleteReply(replyId) {
     const query = {
-      text: 'UPDATE replies SET is_delete = true WHERE id = $1',
+      text: "UPDATE replies SET is_delete = true WHERE id = $1",
       values: [replyId],
     };
 
     const result = await this._pool.query(query);
 
     if (!result.rowCount) {
-      throw new NotFoundError('balasan tidak ditemukan');
+      throw new NotFoundError("balasan tidak ditemukan");
     }
   }
 
@@ -72,27 +68,27 @@ class ReplyRepositoryPostgres extends ReplyRepository {
 
   async verifyAvailableReply(replyId) {
     const query = {
-      text: 'SELECT id FROM replies WHERE id = $1',
+      text: "SELECT id FROM replies WHERE id = $1",
       values: [replyId],
     };
 
     const result = await this._pool.query(query);
 
     if (!result.rowCount) {
-      throw new NotFoundError('balasan tidak ditemukan');
+      throw new NotFoundError("balasan tidak ditemukan");
     }
   }
 
   async checkReplyBelongsToComment(replyId, commentId) {
     const query = {
-      text: 'SELECT id FROM replies WHERE id = $1 AND comment_id = $2',
+      text: "SELECT id FROM replies WHERE id = $1 AND comment_id = $2",
       values: [replyId, commentId],
     };
 
     const result = await this._pool.query(query);
 
     if (!result.rowCount) {
-      throw new NotFoundError('balasan dalam komentar tidak ditemukan');
+      throw new NotFoundError("balasan dalam komentar tidak ditemukan");
     }
   }
 

@@ -1,15 +1,15 @@
 import { vi } from "vitest";
-import AddCommentUseCase from "../../../../../Applications/use_case/AddCommentUseCase.js";
-import DeleteCommentUseCase from "../../../../../Applications/use_case/DeleteCommentUseCase.js";
-import CommentsHandler from "../CommentsHandler.js";
+import AddReplyUseCase from "../../../../../Applications/use_case/AddReplyUseCase.js";
+import DeleteReplyUseCase from "../../../../../Applications/use_case/DeleteReplyUseCase.js";
+import RepliesHandler from "../handler.js";
 
-describe("CommentsHandler", () => {
-  describe("postCommentHandler", () => {
-    it("should response 201 and added comment", async () => {
+describe("RepliesHandler", () => {
+  describe("postReplyHandler", () => {
+    it("should response 201 and added reply", async () => {
       // Arrange
       const req = {
         user: { id: "user-123" },
-        params: { threadId: "thread-123" },
+        params: { threadId: "thread-123", commentId: "comment-123" },
         body: { content: "abc" },
       };
       const res = {
@@ -18,35 +18,36 @@ describe("CommentsHandler", () => {
       };
       const next = vi.fn();
 
-      const mockAddedComment = {
-        id: "comment-123",
+      const mockAddedReply = {
+        id: "reply-123",
         content: "abc",
         owner: "user-123",
       };
-      const mockAddCommentUseCase = {
-        execute: vi.fn(() => Promise.resolve(mockAddedComment)),
+      const mockAddReplyUseCase = {
+        execute: vi.fn(() => Promise.resolve(mockAddedReply)),
       };
       const mockContainer = {
-        getInstance: vi.fn(() => mockAddCommentUseCase),
+        getInstance: vi.fn(() => mockAddReplyUseCase),
       };
 
-      const commentsHandler = new CommentsHandler(mockContainer);
+      const repliesHandler = new RepliesHandler(mockContainer);
 
       // Action
-      await commentsHandler.postCommentHandler(req, res, next);
+      await repliesHandler.postReplyHandler(req, res, next);
 
       // Assert
-      expect(mockContainer.getInstance).toBeCalledWith(AddCommentUseCase.name);
-      expect(mockAddCommentUseCase.execute).toBeCalledWith({
+      expect(mockContainer.getInstance).toBeCalledWith(AddReplyUseCase.name);
+      expect(mockAddReplyUseCase.execute).toBeCalledWith({
         content: "abc",
         threadId: "thread-123",
+        commentId: "comment-123",
         owner: "user-123",
       });
       expect(res.status).toBeCalledWith(201);
       expect(res.json).toBeCalledWith({
         status: "success",
         data: {
-          addedComment: mockAddedComment,
+          addedReply: mockAddedReply,
         },
       });
     });
@@ -55,35 +56,39 @@ describe("CommentsHandler", () => {
       // Arrange
       const req = {
         user: { id: "user-123" },
-        params: { threadId: "thread-123" },
+        params: { threadId: "thread-123", commentId: "comment-123" },
         body: {},
       };
       const res = {};
       const next = vi.fn();
 
-      const mockAddCommentUseCase = {
+      const mockAddReplyUseCase = {
         execute: vi.fn(() => Promise.reject(new Error("error"))),
       };
       const mockContainer = {
-        getInstance: vi.fn(() => mockAddCommentUseCase),
+        getInstance: vi.fn(() => mockAddReplyUseCase),
       };
 
-      const commentsHandler = new CommentsHandler(mockContainer);
+      const repliesHandler = new RepliesHandler(mockContainer);
 
       // Action
-      await commentsHandler.postCommentHandler(req, res, next);
+      await repliesHandler.postReplyHandler(req, res, next);
 
       // Assert
       expect(next).toBeCalledWith(new Error("error"));
     });
   });
 
-  describe("deleteCommentHandler", () => {
+  describe("deleteReplyHandler", () => {
     it("should response 200", async () => {
       // Arrange
       const req = {
         user: { id: "user-123" },
-        params: { threadId: "thread-123", commentId: "comment-123" },
+        params: {
+          threadId: "thread-123",
+          commentId: "comment-123",
+          replyId: "reply-123",
+        },
       };
       const res = {
         status: vi.fn().mockReturnThis(),
@@ -91,25 +96,24 @@ describe("CommentsHandler", () => {
       };
       const next = vi.fn();
 
-      const mockDeleteCommentUseCase = {
+      const mockDeleteReplyUseCase = {
         execute: vi.fn(() => Promise.resolve()),
       };
       const mockContainer = {
-        getInstance: vi.fn(() => mockDeleteCommentUseCase),
+        getInstance: vi.fn(() => mockDeleteReplyUseCase),
       };
 
-      const commentsHandler = new CommentsHandler(mockContainer);
+      const repliesHandler = new RepliesHandler(mockContainer);
 
       // Action
-      await commentsHandler.deleteCommentHandler(req, res, next);
+      await repliesHandler.deleteReplyHandler(req, res, next);
 
       // Assert
-      expect(mockContainer.getInstance).toBeCalledWith(
-        DeleteCommentUseCase.name,
-      );
-      expect(mockDeleteCommentUseCase.execute).toBeCalledWith({
+      expect(mockContainer.getInstance).toBeCalledWith(DeleteReplyUseCase.name);
+      expect(mockDeleteReplyUseCase.execute).toBeCalledWith({
         threadId: "thread-123",
         commentId: "comment-123",
+        replyId: "reply-123",
         owner: "user-123",
       });
       expect(res.status).toBeCalledWith(200);
@@ -122,22 +126,26 @@ describe("CommentsHandler", () => {
       // Arrange
       const req = {
         user: { id: "user-123" },
-        params: { threadId: "thread-123", commentId: "comment-123" },
+        params: {
+          threadId: "thread-123",
+          commentId: "comment-123",
+          replyId: "reply-123",
+        },
       };
       const res = {};
       const next = vi.fn();
 
-      const mockDeleteCommentUseCase = {
+      const mockDeleteReplyUseCase = {
         execute: vi.fn(() => Promise.reject(new Error("error"))),
       };
       const mockContainer = {
-        getInstance: vi.fn(() => mockDeleteCommentUseCase),
+        getInstance: vi.fn(() => mockDeleteReplyUseCase),
       };
 
-      const commentsHandler = new CommentsHandler(mockContainer);
+      const repliesHandler = new RepliesHandler(mockContainer);
 
       // Action
-      await commentsHandler.deleteCommentHandler(req, res, next);
+      await repliesHandler.deleteReplyHandler(req, res, next);
 
       // Assert
       expect(next).toBeCalledWith(new Error("error"));

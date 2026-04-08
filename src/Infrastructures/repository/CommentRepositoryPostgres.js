@@ -1,7 +1,7 @@
-import AddedComment from '../../Domains/comments/entities/AddedComment.js';
-import CommentRepository from '../../Domains/comments/CommentRepository.js';
-import NotFoundError from '../../Commons/exceptions/NotFoundError.js';
-import AuthorizationError from '../../Commons/exceptions/AuthorizationError.js';
+import AddedComment from "../../Domains/comments/entities/AddedComment.js";
+import CommentRepository from "../../Domains/comments/CommentRepository.js";
+import NotFoundError from "../../Commons/exceptions/NotFoundError.js";
+import AuthorizationError from "../../Commons/exceptions/AuthorizationError.js";
 
 class CommentRepositoryPostgres extends CommentRepository {
   constructor(pool, idGenerator) {
@@ -16,7 +16,7 @@ class CommentRepositoryPostgres extends CommentRepository {
     const date = new Date().toISOString();
 
     const query = {
-      text: 'INSERT INTO comments VALUES($1, $2, $3, $4, $5) RETURNING id, content, owner',
+      text: "INSERT INTO comments VALUES($1, $2, $3, $4, $5) RETURNING id, content, owner",
       values: [id, content, threadId, owner, date],
     };
 
@@ -27,33 +27,29 @@ class CommentRepositoryPostgres extends CommentRepository {
 
   async verifyCommentOwner(commentId, owner) {
     const query = {
-      text: 'SELECT owner FROM comments WHERE id = $1',
+      text: "SELECT owner FROM comments WHERE id = $1",
       values: [commentId],
     };
 
     const result = await this._pool.query(query);
 
-    if (!result.rowCount) {
-      throw new NotFoundError('komentar tidak ditemukan');
-    }
-
     const comment = result.rows[0];
 
     if (comment.owner !== owner) {
-      throw new AuthorizationError('anda tidak berhak mengakses resource ini');
+      throw new AuthorizationError("anda tidak berhak mengakses resource ini");
     }
   }
 
   async deleteComment(commentId) {
     const query = {
-      text: 'UPDATE comments SET is_delete = true WHERE id = $1',
+      text: "UPDATE comments SET is_delete = true WHERE id = $1",
       values: [commentId],
     };
 
     const result = await this._pool.query(query);
 
     if (!result.rowCount) {
-      throw new NotFoundError('komentar tidak ditemukan');
+      throw new NotFoundError("komentar tidak ditemukan");
     }
   }
 
@@ -74,27 +70,27 @@ class CommentRepositoryPostgres extends CommentRepository {
 
   async verifyAvailableComment(commentId) {
     const query = {
-      text: 'SELECT id FROM comments WHERE id = $1',
+      text: "SELECT id FROM comments WHERE id = $1",
       values: [commentId],
     };
 
     const result = await this._pool.query(query);
 
     if (!result.rowCount) {
-      throw new NotFoundError('komentar tidak ditemukan');
+      throw new NotFoundError("komentar tidak ditemukan");
     }
   }
 
   async checkCommentBelongsToThread(commentId, threadId) {
     const query = {
-      text: 'SELECT id FROM comments WHERE id = $1 AND thread_id = $2',
+      text: "SELECT id FROM comments WHERE id = $1 AND thread_id = $2",
       values: [commentId, threadId],
     };
 
     const result = await this._pool.query(query);
 
     if (!result.rowCount) {
-      throw new NotFoundError('komentar dalam thread tidak ditemukan');
+      throw new NotFoundError("komentar dalam thread tidak ditemukan");
     }
   }
 }

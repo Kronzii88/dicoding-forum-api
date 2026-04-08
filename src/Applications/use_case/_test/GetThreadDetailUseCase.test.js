@@ -1,7 +1,8 @@
 import { vi } from "vitest";
-import ThreadRepository from '../../../Domains/threads/ThreadRepository.js';
-import CommentRepository from '../../../Domains/comments/CommentRepository.js';
-import ReplyRepository from '../../../Domains/replies/ReplyRepository.js';
+import ThreadRepository from "../../../Domains/threads/ThreadRepository.js";
+import CommentRepository from "../../../Domains/comments/CommentRepository.js";
+import ReplyRepository from "../../../Domains/replies/ReplyRepository.js";
+import LikeRepository from "../../../Domains/likes/LikeRepository.js";
 import GetThreadDetailUseCase from "../GetThreadDetailUseCase.js";
 
 describe("GetThreadDetailUseCase", () => {
@@ -59,6 +60,7 @@ describe("GetThreadDetailUseCase", () => {
     const mockThreadRepository = new ThreadRepository();
     const mockCommentRepository = new CommentRepository();
     const mockReplyRepository = new ReplyRepository();
+    const mockLikeRepository = new LikeRepository();
 
     /** mocking needed function */
     mockThreadRepository.getThreadById = vi.fn(() =>
@@ -70,12 +72,18 @@ describe("GetThreadDetailUseCase", () => {
     mockReplyRepository.getRepliesByThreadId = vi.fn(() =>
       Promise.resolve(mockReplies),
     );
+    mockLikeRepository.getLikeCountByCommentId = vi.fn((commentId) => {
+      if (commentId === "comment-1") return Promise.resolve(2);
+      if (commentId === "comment-2") return Promise.resolve(0);
+      return Promise.resolve(0);
+    });
 
     /** creating use case instance */
     const getThreadDetailUseCase = new GetThreadDetailUseCase({
       threadRepository: mockThreadRepository,
       commentRepository: mockCommentRepository,
       replyRepository: mockReplyRepository,
+      likeRepository: mockLikeRepository,
     });
 
     // Action
@@ -94,6 +102,7 @@ describe("GetThreadDetailUseCase", () => {
           username: "user-a",
           date: "2021",
           content: "comment a",
+          likeCount: 2,
           replies: [
             {
               id: "reply-1",
@@ -114,6 +123,7 @@ describe("GetThreadDetailUseCase", () => {
           username: "user-b",
           date: "2021",
           content: "**komentar telah dihapus**",
+          likeCount: 0,
           replies: [],
         },
       ],
@@ -126,6 +136,12 @@ describe("GetThreadDetailUseCase", () => {
     );
     expect(mockReplyRepository.getRepliesByThreadId).toBeCalledWith(
       useCasePayload.threadId,
+    );
+    expect(mockLikeRepository.getLikeCountByCommentId).toBeCalledWith(
+      "comment-1",
+    );
+    expect(mockLikeRepository.getLikeCountByCommentId).toBeCalledWith(
+      "comment-2",
     );
   });
 });
