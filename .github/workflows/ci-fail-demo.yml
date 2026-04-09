@@ -7,7 +7,14 @@ on:
 
 jobs:
   fail_demo:
-    if: startsWith(github.head_ref, 'ci-fail/')
     runs-on: ubuntu-latest
     steps:
-      - run: exit 1
+      - name: Fail only for ci-fail/* branches (but never skip)
+        shell: bash
+        run: |
+          echo "head_ref=${{ github.head_ref }}"
+          if [[ "${{ github.head_ref }}" == ci-fail/* ]]; then
+            echo "Failing CI (demo) because branch name matches ci-fail/*"
+            exit 1
+          fi
+          echo "Passing CI (demo) because branch name does not match ci-fail/*"
