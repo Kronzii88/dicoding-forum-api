@@ -50,4 +50,4 @@ jobs:
           SSH_USER: ${{ secrets.VPS_USER }}
           DEPLOY_PATH: ${{ secrets.VPS_DEPLOY_PATH }}
         run: |
-          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "cd '$DEPLOY_PATH' && npm ci && npm run migrate && sudo systemctl restart dicoding-forum-api"
+          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "bash -l -c 'cd $DEPLOY_PATH && npm ci && npm run migrate && sudo systemctl restart dicoding-forum-api'"
