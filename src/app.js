@@ -1,12 +1,13 @@
-import 'dotenv/config';
-import createServer from './Infrastructures/http/createServer.js';
-import container from './Infrastructures/container.js';
-import config from './Commons/config.js';
+import "dotenv/config";
+import createServer from "./Infrastructures/http/createServer.js";
+import container from "./Infrastructures/container.js";
+import config from "./Commons/config.js";
 
 const start = async () => {
   const app = await createServer(container);
   const { host, port } = config.app;
 
+  console.log("tes fail");
   app.listen(port, host, () => {
     console.log(`server start at http://${host}:${port}`);
   });
