@@ -44,6 +44,13 @@ jobs:
             -e "ssh -p $SSH_PORT" \
             ./ "$SSH_USER@$SSH_HOST:$DEPLOY_PATH/"
       - name: Install & restart service
+        run: |
+          ssh -p "${{ secrets.VPS_PORT }}" "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" "
+            cd '${{ secrets.VPS_DEPLOY_PATH }}' && \
+            npm ci && \
+            npm run migrate && \
+            sudo systemctl restart dicoding-forum-api
+          "
         env:
           SSH_HOST: ${{ secrets.VPS_HOST }}
           SSH_PORT: ${{ secrets.VPS_PORT }}
