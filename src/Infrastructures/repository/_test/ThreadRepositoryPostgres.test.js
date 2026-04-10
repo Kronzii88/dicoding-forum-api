@@ -7,9 +7,9 @@ import ThreadRepositoryPostgres from '../ThreadRepositoryPostgres.js';
 import NotFoundError from '../../../Commons/exceptions/NotFoundError.js';
 
 describe('ThreadRepositoryPostgres', () => {
-  afterEach(async () => {
-    await ThreadsTableTestHelper.cleanTable();
+  beforeEach(async () => {
     await UsersTableTestHelper.cleanTable();
+    await ThreadsTableTestHelper.cleanTable();
   });
 
   afterAll(async () => {

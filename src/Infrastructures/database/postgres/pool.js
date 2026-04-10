@@ -1,5 +1,6 @@
 /* istanbul ignore file */
-import { Pool } from 'pg';
+import pg from 'pg';
+const { Pool } = pg;
 import config from '../../../Commons/config.js';
 
 const pool = new Pool(config.database);

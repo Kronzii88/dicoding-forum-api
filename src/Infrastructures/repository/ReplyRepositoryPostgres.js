@@ -16,7 +16,7 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     const date = new Date().toISOString();
 
     const query = {
-      text: "INSERT INTO replies VALUES($1, $2, $3, $4, $5) RETURNING id, content, owner",
+      text: "INSERT INTO replies(id, content, comment_id, owner, date) VALUES($1, $2, $3, $4, $5) RETURNING id, content, owner",
       values: [id, content, commentId, owner, date],
     };
 
@@ -32,6 +32,10 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     };
 
     const result = await this._pool.query(query);
+
+    if (!result.rowCount) {
+      throw new NotFoundError("balasan tidak ditemukan");
+    }
 
     if (result.rows[0].owner !== owner) {
       throw new AuthorizationError("anda tidak berhak mengakses resource ini");

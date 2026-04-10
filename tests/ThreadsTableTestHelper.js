@@ -1,12 +1,16 @@
 /* istanbul ignore file */
-import pool from '../src/Infrastructures/database/postgres/pool.js';
+import pool from "../src/Infrastructures/database/postgres/pool.js";
 
 const ThreadsTableTestHelper = {
   async addThread({
-    id = 'thread-123', title = 'sebuah thread', body = 'sebuah body thread', owner = 'user-123', date = '2021-08-08T07:19:09.775Z',
+    id = "thread-123",
+    title = "sebuah thread",
+    body = "sebuah body thread",
+    owner = "user-123",
+    date = "2021-08-08T07:19:09.775Z",
   }) {
     const query = {
-      text: 'INSERT INTO threads VALUES($1, $2, $3, $4, $5)',
+      text: "INSERT INTO threads(id, title, body, owner, date) VALUES($1, $2, $3, $4, $5)",
       values: [id, title, body, owner, date],
     };
 
@@ -15,7 +19,7 @@ const ThreadsTableTestHelper = {
 
   async findThreadById(id) {
     const query = {
-      text: 'SELECT * FROM threads WHERE id = $1',
+      text: "SELECT * FROM threads WHERE id = $1",
       values: [id],
     };
 
@@ -24,7 +28,7 @@ const ThreadsTableTestHelper = {
   },
 
   async cleanTable() {
-    await pool.query('DELETE FROM threads WHERE 1=1');
+    await pool.query("DELETE FROM threads WHERE 1=1");
   },
 };
 

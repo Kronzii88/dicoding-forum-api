@@ -6,7 +6,7 @@ import pool from '../../database/postgres/pool.js';
 import UserRepositoryPostgres from '../UserRepositoryPostgres.js';
 
 describe('UserRepositoryPostgres', () => {
-  afterEach(async () => {
+  beforeEach(async () => {
     await UsersTableTestHelper.cleanTable();
   });
 
