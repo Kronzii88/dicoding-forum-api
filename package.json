@@ -6,9 +6,9 @@
   "scripts": {
     "start": "node src/app.js",
     "start:dev": "nodemon src/app.js",
-    "test": "vitest --run",
-    "test:watch": "vitest --watch",
-    "test:coverage": "vitest --coverage",
+    "test": "export NODE_ENV=test && vitest --run",
+    "test:watch": "export NODE_ENV=test && vitest --watch",
+    "test:coverage": "export NODE_ENV=test && vitest --coverage",
     "migrate": "node-pg-migrate up",
     "migrate:test": "node-pg-migrate up --envPath .test.env",
     "lint": "eslint ./"

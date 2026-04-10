@@ -27,7 +27,7 @@ class UserRepositoryPostgres extends UserRepository {
     const id = `user-${this._idGenerator()}`;
 
     const query = {
-      text: 'INSERT INTO users VALUES($1, $2, $3, $4) RETURNING id, username, fullname',
+      text: 'INSERT INTO users(id, username, password, fullname) VALUES($1, $2, $3, $4) RETURNING id, username, fullname',
       values: [id, username, password, fullname],
     };
 

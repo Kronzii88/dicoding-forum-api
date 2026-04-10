@@ -6,7 +6,7 @@ import pool from "../../database/postgres/pool.js";
 import LikeRepositoryPostgres from "../LikeRepositoryPostgres.js";
 
 describe("LikeRepositoryPostgres", () => {
-  afterEach(async () => {
+  beforeEach(async () => {
     await LikesTableTestHelper.cleanTable();
     await CommentsTableTestHelper.cleanTable();
     await ThreadsTableTestHelper.cleanTable();

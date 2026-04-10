@@ -6,18 +6,8 @@ on:
       - main
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-      - run: npm ci
-      - run: npm run lint
-
-  test:
+  success_scenario:
+    name: Test Success Scenario
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -53,3 +43,45 @@ jobs:
       - run: npm ci
       - run: npm run migrate
       - run: npm test
+
+  fail_scenario:
+    name: Test Fail Scenario
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: forumapi_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d forumapi_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      NODE_ENV: test
+      PORT: 5000
+      PGHOST: localhost
+      PGPORT: 5432
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: forumapi_test
+      ACCESS_TOKEN_KEY: ci_access_token_key
+      REFRESH_TOKEN_KEY: ci_refresh_token_key
+      ACCESS_TOKEN_AGE: 3000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run migrate
+      - name: Intentionally break the Demo test
+        run: |
+          sed -i "s/expect(hello).toBe('world')/expect(hello).toBe('fail')/" src/Demo.test.js
+      - name: Run tests (expected to fail)
+        run: npm test

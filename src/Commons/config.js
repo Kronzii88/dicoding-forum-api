@@ -1,10 +1,10 @@
 /* istanbul ignore file */
-import dotenv from 'dotenv';
-import path from 'path';
+import dotenv from "dotenv";
+import path from "path";
 
-if (process.env.NODE_ENV === 'test') {
+if (process.env.NODE_ENV === "test") {
   dotenv.config({
-    path: path.resolve(process.cwd(), '.test.env'),
+    path: path.resolve(process.cwd(), ".test.env"),
   });
 } else {
   dotenv.config();
@@ -12,9 +12,9 @@ if (process.env.NODE_ENV === 'test') {
 
 const config = {
   app: {
-    host: process.env.NODE_ENV !== 'production' ? 'localhost' : '0.0.0.0',
+    host: process.env.NODE_ENV !== "production" ? "localhost" : "0.0.0.0",
     port: process.env.PORT,
-    debug: process.env.NODE_ENV === 'development' ? { request: ['error'] } : {},
+    debug: process.env.NODE_ENV === "development" ? { request: ["error"] } : {},
   },
   database: {
     host: process.env.PGHOST,
@@ -24,7 +24,7 @@ const config = {
     database: process.env.PGDATABASE,
   },
   auth: {
-    jwtStrategy: 'forumapi',
+    jwtStrategy: "forumapi",
     accessTokenKey: process.env.ACCESS_TOKEN_KEY,
     refreshTokenKey: process.env.REFRESH_TOKEN_KEY,
     accessTokenAge: process.env.ACCESS_TOKEN_AGE,

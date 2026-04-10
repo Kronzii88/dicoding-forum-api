@@ -16,7 +16,7 @@ class CommentRepositoryPostgres extends CommentRepository {
     const date = new Date().toISOString();
 
     const query = {
-      text: "INSERT INTO comments VALUES($1, $2, $3, $4, $5) RETURNING id, content, owner",
+      text: "INSERT INTO comments(id, content, thread_id, owner, date) VALUES($1, $2, $3, $4, $5) RETURNING id, content, owner",
       values: [id, content, threadId, owner, date],
     };
 
@@ -32,6 +32,10 @@ class CommentRepositoryPostgres extends CommentRepository {
     };
 
     const result = await this._pool.query(query);
+
+    if (!result.rowCount) {
+      throw new NotFoundError("komentar tidak ditemukan");
+    }
 
     const comment = result.rows[0];
 

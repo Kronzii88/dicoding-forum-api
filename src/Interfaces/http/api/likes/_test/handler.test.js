@@ -14,7 +14,7 @@ describe("Likes API", () => {
     await pool.end();
   });
 
-  afterEach(async () => {
+  beforeEach(async () => {
     await LikesTableTestHelper.cleanTable();
     await CommentsTableTestHelper.cleanTable();
     await ThreadsTableTestHelper.cleanTable();
